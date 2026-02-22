@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: arenita_admin
+      POSTGRES_USER: arenita
+      POSTGRES_PASSWORD: arenita_secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  admin:
+    build: .
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/arenita_admin
+      SPRING_DATASOURCE_USERNAME: arenita
+      SPRING_DATASOURCE_PASSWORD: arenita_secret
+      JWT_SECRET: change-me-in-production-use-a-256-bit-key
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

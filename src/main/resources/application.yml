@@ -1,0 +1,48 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: arenita-admin
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: ${JWT_SECRET:arenita-dev-secret-key-change-in-production-256bit}
+  expiration-ms: 86400000
+
+api:
+  key: ${API_KEY:arenita-service-key}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:arenita_admin;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://localhost:5433/arenita_admin
+    driver-class-name: org.postgresql.Driver
+    username: arenita
+    password: arenita_secret
+  jpa:
+    hibernate:
+      ddl-auto: validate
