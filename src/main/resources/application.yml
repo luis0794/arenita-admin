@@ -1,5 +1,7 @@
 server:
   port: 8082
+  servlet:
+    context-path: /admin
 
 spring:
   application:
@@ -39,10 +41,10 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://localhost:5433/arenita_admin
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/arenita}
     driver-class-name: org.postgresql.Driver
-    username: arenita
-    password: arenita_secret
+    username: ${SPRING_DATASOURCE_USERNAME:arenita}
+    password: ${SPRING_DATASOURCE_PASSWORD:arenita_secret}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
