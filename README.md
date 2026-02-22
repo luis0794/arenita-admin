@@ -78,17 +78,46 @@ http://localhost:8082/swagger-ui/index.html
 - Feature flags y greeting personalizado
 
 ## Arquitectura
+
+```mermaid
+graph TB
+    subgraph API["🌐 REST Controllers"]
+        UC[UserController]
+        MC[ModerationController]
+        AC[AuditController]
+    end
+
+    subgraph App["⚙️ Services"]
+        US[UserService]
+        PS[PermissionService]
+        PZS[PersonalizationService]
+        MS[ModerationService]
+    end
+
+    subgraph Domain["📦 Domain Model"]
+        U[User<br/>roles + status]
+        P[Permission<br/>RBAC + time-based]
+        PZ[Personalization<br/>tone + format]
+        MR[ModerationRule<br/>policies]
+        AL[AuditLog<br/>inmutable]
+    end
+
+    UC --> US & PS & PZS
+    MC --> MS
+    US & PS & PZS & MS -->|audit trail| AL
+    US --> U
+    PS --> P
+    PZS --> PZ
+    MS --> MR
+    U & P & PZ & MR & AL --> DB[(PostgreSQL)]
+```
+
+### Paquetes
 ```
 com.arenita.admin/
 ├── domain/          # Entidades y repositorios
-│   ├── model/       # User, Permission, Personalization, ModerationRule, AuditLog
-│   └── repository/  # JPA repositories
 ├── application/     # Servicios de negocio
-│   ├── UserService, PermissionService
-│   ├── PersonalizationService, ModerationService
 ├── infrastructure/  # Web, seguridad, config
-│   ├── web/         # Controllers REST
-│   └── config/      # Security, ExceptionHandler
 └── api/             # DTOs y mappers
 ```
 
